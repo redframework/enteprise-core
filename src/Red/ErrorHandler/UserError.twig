@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="{{ rootPath() }}public/Red/Images/favicon.png"/>
+<head>
+    {% block info %}
+        <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Red Framework - Internal Server Error</title>
+        <style>
+        </style>
+    {% endblock %}
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+
+<body red-app="main" style="box-shadow: 0 0 0.625vw 0 rgba(0,0,0,0.24);border-radius: 5px">
+
+{% block header %}
+
+    <div id="header"
+         style="box-shadow: 0 0 0.625vw 0 rgba(0,0,0,0.24);-moz-user-select: -moz-none;-webkit-user-select: none;-ms-user-select: none;user-select: none;position:relative;height: 180px;max-height: 180px;background-image: url('{{ rootPath() }}public/Red/Images/Header_Background.jpg');
+                 background-size: cover;width: 100%;margin: auto;border-radius: 5px 5px 0 0;opacity: 0.82">
+        <div id="particles" style="width: 80%;height: 180px;max-height: 180px;position: absolute;right: 0;"></div>
+        <img alt="Red Framework" draggable="false"
+             src="{{ rootPath() }}public/Red/Images/Red_Framework_Logo_For_Header.png"
+             style="height: 120px;width: 120px;margin-top: 30px;float: left">
+        <div style="font-size: 22px;text-shadow: 0 0 0.625vw 0 rgba(0,0,0,0.50);color:#ffffff;padding-top: 60px;">Red
+            Framework
+        </div>
+        <div style="text-shadow: 0 0 0.625vw 0 rgba(0,0,0,0.50);color:#ffffff;padding-top: 14px;">Enterprise
+            Applications
+            Host
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block content %}
+
+    <div red-controller="internalError" id="content" style="min-height: 200px;margin-top: 30px;text-shadow: black 0 0 1px">
+
+        <div id="error-container" style="-moz-user-select: -moz-none;-webkit-user-select: none;-ms-user-select: none;user-select: none;position:relative;margin: auto;text-align: center">
+            <div id="looking-for-error">
+                <div id="looking-for-error-image-container">
+                    <img draggable="false" style="font-size: 35px;width: 120px;height: 120px;" src="{{ rootPath() }}public/Red/Images/loading.gif" alt="Loading">
+                </div>
+                <div>
+                    Looking for Error Code :
+                    <div id="error-code" style="margin-top: 10px;text-shadow: black 0 0 0;color: #E25A5A;font-weight: bold;font-size: 35px;">0</div>
+                </div>
+            </div>
+            <div id="internal-error-container" style="display: none;margin: auto;text-align: center">
+                <img id="internal-error-image" style="position: relative;width: 38%;float: left;margin-right: 10%;margin-left: 10%" draggable="false" src="{{ rootPath() }}public/Red/Images/Internal_Server_Error.png" alt="Internal Server Error">
+                <div id="internal-error-caption"
+                     style="display: none;left: 200px;position: relative;text-align: left;border-left: 4px rgba(226,90,90,0.85) solid;border-radius: 3px;float: left;margin-top: 6%;padding-left: 2%;padding-bottom: 0.4%">
+                    <h3 style="line-height: 28px">500 Internal Server Error
+                    </h3>
+                    <br/>
+                    <button id="try-again-button" style="margin-top: 25%;margin-right: auto;background-color: transparent;border: 1.2px rgb(226,90,90) solid;border-radius: 3px;padding: 5px;cursor: pointer;color: rgb(226,90,90);
+            width: 80px;height: 30px;opacity: 0.68;">Try Again
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block footer %}
+
+    <hr style="clear: both;width: 95%;text-align: center;margin-top: 20px;">
+
+    <div id="footer" style="padding-bottom: 15px;margin-top: 20px;">
+        <div style="text-shadow: black 0 0 1px;text-align: center">Honored to host your Application, Red Framework
+            2019
+        </div>
+    </div>
+
+{% endblock %}
+
+<script src="{{ rootPath() }}public/Library/jquery/jquery-3.3.1.min.js"></script>
+<script src="{{ rootPath() }}public/Red/JS/particles.min.js"></script>
+{{ RedJS() | raw }}
+
+<script>
+
+    Red.app.module("main");
+
+    var root = {
+        alert: function (title, message) {
+
+            console.log("Error Message : " + message);
+
+            var alert_cover = Red.create('div', Red.get('body'), {
+                'display': 'none',
+                'position': 'fixed',
+                'top': '0',
+                'bottom': '0',
+                'right': '0',
+                'left': '0',
+                'background-color': 'rgba(0, 0, 0, 0.6)',
+                'z-index': '7',
+                'height': '100%',
+                'width': '100%',
+            });
+
+            var alert_container = Red.create('div', alert_cover, {
+                'position': 'fixed',
+                'top': '8%',
+                'bottom': '0',
+                'right': '0',
+                'left': '0',
+                'margin': 'auto',
+                'height': '210px',
+                'width': '62%',
+                'text-align': 'center',
+                'background-color': 'white',
+                'border-radius': '7px'
+            });
+
+            var alert_design = Red.create('div', alert_container, {
+                'position': 'relative',
+                'top': 0,
+                'background-color': 'rgb(226,90,90)',
+                'text-shadow': 'rgba(0, 0, 0, 0.4) 0 0 2px',
+                'height': '30px',
+                'border-radius': '7px 7px 0 0',
+                'color': 'white',
+                'padding-top': '12px'
+            });
+
+            Red.select(alert_design).innerHTML(title);
+
+            var alert_message = Red.create('div', alert_container, {
+                'direction': 'ltr',
+                'max-width': '100%',
+                'max-height': '100%',
+                'position': 'relative',
+                'top': '45px',
+                'font-size': '17px',
+                'white-space': 'nowrap',
+                'overflow': 'hidden',
+                'text-overflow': 'ellipsis',
+                'margin-left': '3px',
+                'margin-right': '3px',
+                'margin-top': '8px',
+            });
+
+            Red.select(alert_message).innerHTML(message);
+
+            var alert_retry_button = Red.create('button', alert_container, {
+                'margin-top': '6px',
+                'margin-right': '6px',
+                'position': 'relative',
+                'top': '66px',
+                'left': '0',
+                'right': '0',
+                'text-align': 'center',
+                'background-color': 'transparent',
+                'border': '1.2px rgb(226,90,90) solid',
+                'border-radius': '3px',
+                'padding': '5px',
+                'cursor': 'pointer',
+                'color': 'rgb(226,90,90)',
+                'width': '80px',
+                'height': '30px',
+                'opacity': '0.68'
+            });
+
+            var alert_close_button = Red.create('button', alert_container, {
+                'margin-top': '6px',
+                'margin-left': '6px',
+                'position': 'relative',
+                'top': '66px',
+                'left': '0',
+                'right': '0',
+                'text-align': 'center',
+                'background-color': 'transparent',
+                'border': '1.2px rgb(226,90,90) solid',
+                'border-radius': '3px',
+                'padding': '5px',
+                'cursor': 'pointer',
+                'color': 'rgb(226,90,90)',
+                'width': '240px',
+                'height': '30px',
+                'opacity': '0.68'
+            });
+
+
+            Red.select(alert_close_button).mouseEnter(function () {
+                $(alert_close_button).animate({"opacity": "1.0"}, 700);
+            });
+
+            Red.select(alert_close_button).mouseLeave(function () {
+                $(alert_close_button).animate({"opacity": "0.68"}, 700);
+            });
+
+            Red.select(alert_close_button).innerHTML('Close and Check System Analyse');
+
+            Red.select(alert_retry_button).mouseEnter(function () {
+                $(alert_retry_button).animate({"opacity": "1.0"}, 700);
+            });
+
+            Red.select(alert_retry_button).mouseLeave(function () {
+                $(alert_retry_button).animate({"opacity": "0.68"}, 700);
+            });
+
+            Red.select(alert_retry_button).innerHTML('Retry');
+
+            Red.select(alert_retry_button).click(function () {
+                Red.redirect(window.location);
+            });
+
+            $(alert_cover).fadeIn(700);
+
+            Red.select(alert_close_button).click(function () {
+                $(alert_cover).fadeOut(400);
+                var time_handler = function () {
+                    Red.select('body').remove(alert_cover);
+                };
+            });
+
+            if ($(window).outerWidth() <= 600){
+                Red.select(alert_retry_button).CSS({'margin-top': '7px', 'width': '240px', 'margin-left': '0', 'margin-right': '0'});
+                Red.select(alert_close_button).CSS({'margin-top': '7px', 'margin-left': '0', 'margin-right': '0'});
+                Red.select(alert_container).CSS({'height': '240px'});
+            } else {
+                Red.select(alert_retry_button).CSS({'margin-top': '25px', 'width': '80px'});
+                Red.select(alert_close_button).CSS({'margin-top': '25px'});
+                Red.select(alert_container).CSS({'height': '210px'});
+
+            }
+
+            $(window).on("resize", function () {
+                if ($(window).outerWidth() <= 600){
+                    Red.select(alert_retry_button).CSS({'margin-top': '7px', 'width': '240px', 'margin-left': '0', 'margin-right': '0'});
+                    Red.select(alert_close_button).CSS({'margin-top': '7px', 'margin-left': '0', 'margin-right': '0'});
+                    Red.select(alert_container).CSS({'height': '240px'});
+                } else {
+                    Red.select(alert_retry_button).CSS({'margin-top': '25px', 'width': '80px', 'margin-right': '6px'});
+                    Red.select(alert_close_button).CSS({'margin-top': '25px', 'margin-left': '6px'});
+                    Red.select(alert_container).CSS({'height': '210px'});
+                }
+            });
+        }
+    };
+
+    Red.ready(function () {
+        particlesJS('particles',
+            {
+                "particles": {
+                    "number": {
+                        "value": 140,
+                        "density": {
+                            "enable": true,
+                            "value_area": 800
+                        }
+                    },
+                    "color": {
+                        "value": "#ffffff"
+                    },
+                    "shape": {
+                        "type": "circle",
+                        "stroke": {
+                            "width": 0,
+                            "color": "#000000"
+                        },
+                        "polygon": {
+                            "nb_sides": 5
+                        },
+                        "image": {
+                            "src": "img/github.svg",
+                            "width": 100,
+                            "height": 100
+                        }
+                    },
+                    "opacity": {
+                        "value": 0.5,
+                        "random": false,
+                        "anim": {
+                            "enable": false,
+                            "speed": 1,
+                            "opacity_min": 0.1,
+                            "sync": false
+                        }
+                    },
+                    "size": {
+                        "value": 5,
+                        "random": true,
+                        "anim": {
+                            "enable": false,
+                            "speed": 40,
+                            "size_min": 0.1,
+                            "sync": false
+                        }
+                    },
+                    "line_linked": {
+                        "enable": true,
+                        "distance": 150,
+                        "color": "#ffffff",
+                        "opacity": 0.4,
+                        "width": 1
+                    },
+                    "move": {
+                        "enable": true,
+                        "speed": 6,
+                        "direction": "none",
+                        "random": false,
+                        "straight": false,
+                        "out_mode": "out",
+                        "attract": {
+                            "enable": false,
+                            "rotateX": 600,
+                            "rotateY": 1200
+                        }
+                    }
+                },
+                "interactivity": {
+                    "detect_on": "canvas",
+                    "events": {
+                        "onhover": {
+                            "enable": true,
+                            "mode": "repulse"
+                        },
+                        "onclick": {
+                            "enable": false,
+                            "mode": "push"
+                        },
+                        "resize": true
+                    },
+                    "modes": {
+                        "grab": {
+                            "distance": 400,
+                            "line_linked": {
+                                "opacity": 1
+                            }
+                        },
+                        "bubble": {
+                            "distance": 400,
+                            "size": 40,
+                            "duration": 2,
+                            "opacity": 8,
+                            "speed": 3
+                        },
+                        "repulse": {
+                            "distance": 200
+                        },
+                        "push": {
+                            "particles_nb": 4
+                        },
+                        "remove": {
+                            "particles_nb": 2
+                        }
+                    }
+                },
+                "retina_detect": true,
+                "config_demo": {
+                    "hide_card": false,
+                    "background_color": "#b61924",
+                    "background_image": "",
+                    "background_position": "50% 50%",
+                    "background_repeat": "no-repeat",
+                    "background_size": "cover"
+                }
+            }
+        );
+    });
+</script>
+
+{% block script %}
+    <script>
+
+        Red.app.addController("main", "internalError", function () {
+
+        });
+
+        Red.ready(function () {
+
+            var error_code = $("#error-code");
+
+            var internal_error_caption = $("#internal-error-caption");
+            var internal_error_image = $("#internal-error-image");
+
+            var try_again_button = $("#try-again-button");
+
+            try_again_button.hover(function () {
+                try_again_button.stop(true).animate({"opacity": '1.0'}, 400);
+            }, function () {
+                try_again_button.stop(true).animate({"opacity": '0.68'}, 400);
+
+            });
+
+            try_again_button.click(function () {
+                window.location = window.location;
+            });
+
+            for (var counter = 0;counter <= 500; counter++){
+
+                let i = counter;
+
+                setTimeout(function () {
+                    error_code.html(i);
+
+                    if (i === 500){
+                        $("#looking-for-error").hide(600);
+                        $("#internal-error-container").show(1000);
+
+
+                        internal_error_caption.show(1000);
+                        internal_error_caption.animate({"left": '0'}, 1000);
+
+
+                        resizeHandler(internal_error_image, internal_error_caption);
+                    }
+
+                }, counter * 5);
+            }
+
+
+            $(window).on("resize", function () {
+                resizeHandler(internal_error_image, internal_error_caption)
+            });
+
+            function resizeHandler(internal_error_image, internal_error_caption){
+                if ($(window).outerWidth() <= 800) {
+                    internal_error_image.css({"float": "unset", "text-align": "center", "width": "60%"});
+                    internal_error_caption.css({"float": "unset", "text-align": "center", "border": "unset"});
+                    try_again_button.css({"margin-top": "3%"});
+                } else {
+                    internal_error_image.css({"float": "left", "text-align": "left", "width": "38%"});
+                    internal_error_caption.css({
+                        "float": "left",
+                        "text-align": "left",
+                        "border-left": "4px rgba(226,90,90,0.85) solid"
+                    });
+                    try_again_button.css({"margin-top": "25%"});
+
+                }
+            }
+
+        });
+    </script>
+
+{% endblock %}
+
+</body>
+</html>

@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="en">
+<link rel="icon" type="image/png" href="{{ rootPath() }}public/Red/Images/favicon.png"/>
+<head>
+    {% block info %}
+        <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Red Framework - Error</title>
+        <style>
+            #debugger {
+                line-height: 30px;
+                margin-right: 4%;
+                margin-left: 4%;
+                padding: 15px;
+                font-family: Courier, sans-serif;
+                font-size: 13px;
+                color: #fff;
+                background-color: rgba(61, 61, 61, 0.96);
+                margin-bottom: 10px;
+            }
+
+            pre{
+                counter-reset: line;
+            }
+            code{
+                counter-increment: line;
+                display: block;
+            }
+
+            code:before {
+                content: counter(line) "   ";
+                color: lightgray;
+            }
+
+
+
+        </style>
+    {% endblock %}
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+
+<body red-app="main" style="box-shadow: 0 0 0.625vw 0 rgba(0,0,0,0.24);border-radius: 5px">
+
+{% block header %}
+
+    <div id="header"
+         style="box-shadow: 0 0 0.625vw 0 rgba(0,0,0,0.24);-moz-user-select: -moz-none;-webkit-user-select: none;-ms-user-select: none;user-select: none;position:relative;height: 180px;max-height: 180px;background-image: url('{{ rootPath() }}public/Red/Images/Header_Background.jpg');
+                 background-size: cover;width: 100%;margin: auto;border-radius: 5px 5px 0 0;opacity: 0.82">
+        <div id="particles" style="width: 80%;height: 180px;max-height: 180px;position: absolute;right: 0;"></div>
+        <img alt="Red Framework" draggable="false"
+             src="{{ rootPath() }}public/Red/Images/Red_Framework_Logo_For_Header.png"
+             style="height: 120px;width: 120px;margin-top: 30px;float: left">
+        <div style="font-size: 22px;text-shadow: 0 0 0.625vw 0 rgba(0,0,0,0.50);color:#ffffff;padding-top: 60px;">Red
+            Framework
+        </div>
+        <div style="text-shadow: 0 0 0.625vw 0 rgba(0,0,0,0.50);color:#ffffff;padding-top: 14px;">Enterprise
+            Applications
+            Host
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block content %}
+    <div red-controller="debugger" id="content"
+         style="width: 100%;position: relative; margin-left: auto;margin-right: auto; margin-top: 10px;height: 100%;background-color: white;border-radius: 4px;">
+
+
+        <div id="stack-trace-container"
+             style="font-size: small;line-height: 17px;float:left;width: 28%;position: relative;text-align: center;margin-bottom:30px;">
+            <div id="stack-trace-title"
+                 style="position: relative;direction: ltr;padding: 3px;text-align: center;box-shadow: 0 0 0.625vw 0 rgba(0,0,0,0.24);margin-top: 5px;height: 35px;margin-left: 15px;width: 90%;background-color: rgba(226,90,90,0.86)">
+                <img draggable="false" src="{{ rootPath() }}public/Red/Images/stack_trace.png"
+                     style="width: 25px;height: 25px;margin-right: 5px;margin-top: 6px"
+                     alt="Stack Trace">
+                <span id="stack-trace-text"
+                      style="color: #ffffff;font-size: 12px;position:relative;top: -8px;margin-top: 4px">Stack Trace</span>
+            </div>
+
+            <div id="stack-trace"
+                 style="max-width: 90%;overflow: auto;height: 43.0625vw;width: 89%;box-shadow: 0 0 0.625vw 0 rgba(0,0,0,0.19);position:sticky;top: 20px;direction: ltr;padding: 5px;text-align: center;margin-top: 10px;margin-left: 15px;">
+
+                {% set j = 1 %}
+                {% for stack in stack_trace %}
+                    {% if j == 1 %}
+                        <div style="font-weight: bold;font-size: 14px;margin-top: 10px;margin-bottom: 20px;color: rgba(226,90,90,0.8)">
+                        {{ error_string }}
+                        </div>
+                    {% endif %}
+                    <div style="text-align: left;margin-top: 10px;margin-left: 10px;line-height: 22px">
+                        <span style="color: rgba(226,90,90,0.9);font-size: 18px;font-weight: bold"># {{ stack.line }}</span>
+                        At
+                        {{ stack.file }}
+                        <br/>
+                        <span style="color: darkblue">Class {{ stack.class }}</span>
+                        <br/>
+                        <span style="font-size: 15px;">->
+                        {% set counter = 1 %}
+                            {{ stack.function }}(<span
+                                    style="color: rgba(226,90,90,0.9)">{% for arg in stack.args %}'{{ arg }}'{% if counter != stack.args|length %},
+                                {% endif %}{% set counter = counter + 1 %}{% endfor %}</span>)
+                            </span>
+                    </div>
+                    {% if j != stack_trace | length %}
+                        <hr>
+                    {% endif %}
+                    {% set j = j + 1 %}
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+
+        <div id="debugger-container"
+             style="font-size: small;position: relative;float: left;width: 70%;line-height: 17px">
+            <div id="debugger-title"
+                 style="position: relative;direction: ltr;padding: 3px;text-align: center;box-shadow: 0 0 0.625vw 0 rgba(0,0,0,0.24);margin-top: 5px;height: 35px;margin-left: 15px;width: 99%;background-color: rgba(226,90,90,0.86)">
+                <img draggable="false" src="{{ rootPath() }}public/Red/Images/debugging.png"
+                     style="width: 25px;height: 25px;margin-right: 5px;margin-top: 6px"
+                     alt="Debugger">
+                <span id="debugger-text"
+                      style="color: #ffffff;font-size: 12px;position:relative;top: -8px;margin-top: 4px">Debugger</span>
+            </div>
+            <div id="debugger"
+                 style="max-height: 43.0625vw;overflow: auto;width: 97%;box-shadow: 0 0 0.625vw 0 rgba(0,0,0,0.19);padding-left: 25px;margin-top: 10px;margin-left: 15px;padding-top: 5px;overflow: auto">
+                {% set i = 1 %}
+                <pre class="code">{% for code_line in code %}{% if i == error_line %}<code id="error" style="border-radius: 3px;margin-left: -10px;padding: 0 10px 0 10px;background-color: rgba(226,90,90,0.6);">{{ code_line }}</code>{% else %}<code>{{ code_line }}</code>{% endif %}{% set i = i + 1 %}{% endfor %}</pre>
+            </div>
+
+        </div>
+
+
+        <div style="clear: both"></div>
+
+
+    </div>
+
+
+{% endblock %}
+
+
+
+{% block footer %}
+
+    <hr style="clear: both;width: 95%;text-align: center;margin-top: 20px;">
+
+    <div id="footer" style="padding-bottom: 15px;margin-top: 20px;">
+        <div style="text-shadow: black 0 0 1px;text-align: center">Honored to host your Application, Red Framework
+            2019
+        </div>
+    </div>
+
+{% endblock %}
+
+<script src="{{ rootPath() }}public/Library/jquery/jquery-3.3.1.min.js"></script>
+<script src="{{ rootPath() }}public/Red/JS/particles.min.js"></script>
+{{ RedJS() | raw }}
+
+<script>
+
+    Red.app.module("main");
+
+    var root = {
+        alert: function (title, message) {
+
+            console.log("Error Message : " + message);
+
+            var alert_cover = Red.create('div', Red.get('body'), {
+                'display': 'none',
+                'position': 'fixed',
+                'top': '0',
+                'bottom': '0',
+                'right': '0',
+                'left': '0',
+                'background-color': 'rgba(0, 0, 0, 0.6)',
+                'z-index': '7',
+                'height': '100%',
+                'width': '100%',
+            });
+
+            var alert_container = Red.create('div', alert_cover, {
+                'position': 'fixed',
+                'top': '8%',
+                'bottom': '0',
+                'right': '0',
+                'left': '0',
+                'margin': 'auto',
+                'height': '210px',
+                'width': '62%',
+                'text-align': 'center',
+                'background-color': 'white',
+                'border-radius': '7px'
+            });
+
+            var alert_design = Red.create('div', alert_container, {
+                'position': 'relative',
+                'top': 0,
+                'background-color': 'rgb(226,90,90)',
+                'text-shadow': 'rgba(0, 0, 0, 0.4) 0 0 2px',
+                'height': '30px',
+                'border-radius': '7px 7px 0 0',
+                'color': 'white',
+                'padding-top': '12px'
+            });
+
+            Red.select(alert_design).innerHTML(title);
+
+            var alert_message = Red.create('div', alert_container, {
+                'direction': 'ltr',
+                'max-width': '100%',
+                'max-height': '100%',
+                'position': 'relative',
+                'top': '45px',
+                'font-size': '17px',
+                'white-space': 'nowrap',
+                'overflow': 'hidden',
+                'text-overflow': 'ellipsis',
+                'margin-left': '3px',
+                'margin-right': '3px',
+                'margin-top': '8px',
+            });
+
+            Red.select(alert_message).innerHTML(message);
+
+            var alert_retry_button = Red.create('button', alert_container, {
+                'margin-top': '6px',
+                'margin-right': '6px',
+                'position': 'relative',
+                'top': '66px',
+                'left': '0',
+                'right': '0',
+                'text-align': 'center',
+                'background-color': 'transparent',
+                'border': '1.2px rgb(226,90,90) solid',
+                'border-radius': '3px',
+                'padding': '5px',
+                'cursor': 'pointer',
+                'color': 'rgb(226,90,90)',
+                'width': '80px',
+                'height': '30px',
+                'opacity': '0.68'
+            });
+
+            var alert_close_button = Red.create('button', alert_container, {
+                'margin-top': '6px',
+                'margin-left': '6px',
+                'position': 'relative',
+                'top': '66px',
+                'left': '0',
+                'right': '0',
+                'text-align': 'center',
+                'background-color': 'transparent',
+                'border': '1.2px rgb(226,90,90) solid',
+                'border-radius': '3px',
+                'padding': '5px',
+                'cursor': 'pointer',
+                'color': 'rgb(226,90,90)',
+                'width': '240px',
+                'height': '30px',
+                'opacity': '0.68'
+            });
+
+
+            Red.select(alert_close_button).mouseEnter(function () {
+                $(alert_close_button).animate({"opacity": "1.0"}, 700);
+            });
+
+            Red.select(alert_close_button).mouseLeave(function () {
+                $(alert_close_button).animate({"opacity": "0.68"}, 700);
+            });
+
+            Red.select(alert_close_button).innerHTML('Close and Check System Analyse');
+
+            Red.select(alert_retry_button).mouseEnter(function () {
+                $(alert_retry_button).animate({"opacity": "1.0"}, 700);
+            });
+
+            Red.select(alert_retry_button).mouseLeave(function () {
+                $(alert_retry_button).animate({"opacity": "0.68"}, 700);
+            });
+
+            Red.select(alert_retry_button).innerHTML('Retry');
+
+            Red.select(alert_retry_button).click(function () {
+                Red.redirect(window.location);
+            });
+
+            $(alert_cover).fadeIn(700);
+
+            Red.select(alert_close_button).click(function () {
+                $(alert_cover).fadeOut(400);
+                var time_handler = function () {
+                    Red.select('body').remove(alert_cover);
+                };
+            });
+
+            if ($(window).outerWidth() <= 600){
+                Red.select(alert_retry_button).CSS({'margin-top': '7px', 'width': '240px', 'margin-left': '0', 'margin-right': '0'});
+                Red.select(alert_close_button).CSS({'margin-top': '7px', 'margin-left': '0', 'margin-right': '0'});
+                Red.select(alert_container).CSS({'height': '240px'});
+            } else {
+                Red.select(alert_retry_button).CSS({'margin-top': '25px', 'width': '80px'});
+                Red.select(alert_close_button).CSS({'margin-top': '25px'});
+                Red.select(alert_container).CSS({'height': '210px'});
+
+            }
+
+            $(window).on("resize", function () {
+                if ($(window).outerWidth() <= 600){
+                    Red.select(alert_retry_button).CSS({'margin-top': '7px', 'width': '240px', 'margin-left': '0', 'margin-right': '0'});
+                    Red.select(alert_close_button).CSS({'margin-top': '7px', 'margin-left': '0', 'margin-right': '0'});
+                    Red.select(alert_container).CSS({'height': '240px'});
+                } else {
+                    Red.select(alert_retry_button).CSS({'margin-top': '25px', 'width': '80px', 'margin-right': '6px'});
+                    Red.select(alert_close_button).CSS({'margin-top': '25px', 'margin-left': '6px'});
+                    Red.select(alert_container).CSS({'height': '210px'});
+                }
+            });
+        }
+    };
+
+    Red.ready(function () {
+        particlesJS('particles',
+            {
+                "particles": {
+                    "number": {
+                        "value": 140,
+                        "density": {
+                            "enable": true,
+                            "value_area": 800
+                        }
+                    },
+                    "color": {
+                        "value": "#ffffff"
+                    },
+                    "shape": {
+                        "type": "circle",
+                        "stroke": {
+                            "width": 0,
+                            "color": "#000000"
+                        },
+                        "polygon": {
+                            "nb_sides": 5
+                        },
+                        "image": {
+                            "src": "img/github.svg",
+                            "width": 100,
+                            "height": 100
+                        }
+                    },
+                    "opacity": {
+                        "value": 0.5,
+                        "random": false,
+                        "anim": {
+                            "enable": false,
+                            "speed": 1,
+                            "opacity_min": 0.1,
+                            "sync": false
+                        }
+                    },
+                    "size": {
+                        "value": 5,
+                        "random": true,
+                        "anim": {
+                            "enable": false,
+                            "speed": 40,
+                            "size_min": 0.1,
+                            "sync": false
+                        }
+                    },
+                    "line_linked": {
+                        "enable": true,
+                        "distance": 150,
+                        "color": "#ffffff",
+                        "opacity": 0.4,
+                        "width": 1
+                    },
+                    "move": {
+                        "enable": true,
+                        "speed": 6,
+                        "direction": "none",
+                        "random": false,
+                        "straight": false,
+                        "out_mode": "out",
+                        "attract": {
+                            "enable": false,
+                            "rotateX": 600,
+                            "rotateY": 1200
+                        }
+                    }
+                },
+                "interactivity": {
+                    "detect_on": "canvas",
+                    "events": {
+                        "onhover": {
+                            "enable": true,
+                            "mode": "repulse"
+                        },
+                        "onclick": {
+                            "enable": false,
+                            "mode": "push"
+                        },
+                        "resize": true
+                    },
+                    "modes": {
+                        "grab": {
+                            "distance": 400,
+                            "line_linked": {
+                                "opacity": 1
+                            }
+                        },
+                        "bubble": {
+                            "distance": 400,
+                            "size": 40,
+                            "duration": 2,
+                            "opacity": 8,
+                            "speed": 3
+                        },
+                        "repulse": {
+                            "distance": 200
+                        },
+                        "push": {
+                            "particles_nb": 4
+                        },
+                        "remove": {
+                            "particles_nb": 2
+                        }
+                    }
+                },
+                "retina_detect": true,
+                "config_demo": {
+                    "hide_card": false,
+                    "background_color": "#b61924",
+                    "background_image": "",
+                    "background_position": "50% 50%",
+                    "background_repeat": "no-repeat",
+                    "background_size": "cover"
+                }
+            }
+        );
+    });
+</script>
+
+{% block script %}
+    <script>
+
+        Red.app.addController("main", "debugger", function () {
+
+        });
+
+        Red.ready(function () {
+
+            console.log("Error Message : {{ error_string | replace({"\n":' ', "\r":' '}) }}");
+
+            var stack_trace_container = $("#stack-trace-container");
+            var stack_trace = $("#stack-trace");
+            var debugger_container = $("#debugger-container");
+            var debugger_element = $("#debugger");
+
+            var error_element = $("#error");
+
+
+            debugger_element.scrollTop(error_element.offset()['top']);
+
+            if (Red.IE()) {
+                stack_trace.css({"position": "relative", "top": "0"});
+            } else {
+                stack_trace_container.css("min-height", Red.select("#debugger").height() + "px");
+            }
+
+            error_element.css({width: debugger_element[0].scrollWidth});
+
+
+            $(window).on("resize", function () {
+                resizeHandler(debugger_container, debugger_element, stack_trace_container, stack_trace);
+            });
+
+            $(window).on("load", function () {
+                resizeHandler(debugger_container, debugger_element, stack_trace_container, stack_trace);
+            });
+
+            function resizeHandler(debugger_container, debugger_element, stack_trace_container, stack_trace) {
+                if ($(window).outerWidth() <= 800) {
+                    debugger_container.css({float: "unset", width: "93%"});
+                    debugger_element.css({width: "91.4%"});
+                    stack_trace_container.css({
+                        float: "unset",
+                        position: "unset",
+                        "min-height": "unset",
+                        "width": "100%"
+                    });
+                    stack_trace.css({height: "unset"});
+
+
+                } else {
+
+                    debugger_container.css({float: "left", width: "70%"});
+                    debugger_element.css({width: "95%"});
+                    stack_trace_container.css({float: "left", width: "28%"});
+                    stack_trace.css({height: "43.0625vw"});
+
+
+                    if (Red.IE()) {
+                        stack_trace.css({"position": "relative", "top": "0"});
+                    } else {
+                        stack_trace_container.css("min-height", Red.select("#debugger").height() + "px");
+                    }
+                }
+            }
+
+        });
+    </script>
+{% endblock %}
+
+</body>
+</html>
+

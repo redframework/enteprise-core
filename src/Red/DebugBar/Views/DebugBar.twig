@@ -1,0 +1,808 @@
+<!-- Debug Bar -->
+
+<body>
+
+<style>
+    .tab-section {
+        background: rgba(226, 90, 90, 0.50);
+        -webkit-transition: background 1s;
+        -moz-transition: background 1s;
+        -o-transition: background 1s;
+        transition: background 1s
+    }
+</style>
+
+<div id="debugbar-container" style="width: 99%;position: fixed;bottom: 2px;left: 0;right: 0;margin: auto">
+    <div id="debugbar"
+         style="text-shadow: rgba(255, 255, 255, 0.2) 0 0 1px;color: white;border-radius: 3px;width: 100%;height: 35px;background-color: rgba(226,90,90,0.85);box-shadow: 0 0 0.625vw 0 rgba(0,0,0,0.24)">
+        <div id="red-logo"
+             style="float: left;position:relative;left: 25px;top: 6px;width: 24px;height: 24px;margin: auto;cursor: pointer;background-color: rgba(211,211,211,0.2);border-radius: 5px">
+            <img style="margin-top: auto;margin-bottom: auto;width: 24px;height: 24px" alt="Red Framework Logo"
+                 src="{{ resource_base }}Icons/red.png"></div>
+
+        <div id="message-tab"
+             style="border-radius: 0 0 5px 5px;padding: 8px 7px 8px 7px;text-align: center;font-size: 14px;float: left;position:relative;margin-left: 39px;cursor: pointer;">
+            <span id="message-length" style="font-size: 12px;border: 1px solid;padding: 3.4px;border-radius: 50%">{{ messages | length }}</span>
+            <span
+                    id="message-caption" style="margin-left: 4px">Message</span>
+        </div>
+
+        <div id="project-tab"
+             style="border-radius: 0 0 5px 5px;padding: 8px 7px 7px 7px;margin-left: 10px;font-size: 14px;float: left;position:relative;cursor: pointer;">
+            <span id="project-caption">Project</span>
+        </div>
+
+        <div id="database-tab"
+             style="border-radius: 0 0 5px 5px;padding: 8px 7px 8px 7px;font-size: 14px;float: left;position:relative;margin-left: 10px;cursor: pointer;">
+            <span id="database-caption">Database</span>
+        </div>
+
+        <div id="query-tab"
+             style="border-radius: 0 0 5px 5px;padding: 8px 7px 8px 7px;font-size: 14px;float: left;position:relative;margin-left: 10px;cursor: pointer;">
+            <span id="query-caption">Query</span>
+        </div>
+
+        <div id="session-tab"
+             style="border-radius: 0 0 5px 5px;padding: 8px 7px 8px 7px;font-size: 14px;float: left;position:relative;margin-left: 10px;cursor: pointer;">
+            <span id="session-caption">Session</span>
+        </div>
+
+        <div id="request-tab"
+             style="border-radius: 0 0 5px 5px;padding: 8px 7px 8px 7px;font-size: 14px;float: left;position:relative;margin-left: 10px;cursor: pointer;">
+            <span id="request-caption">Request</span>
+        </div>
+
+        <div id="middleware-tab"
+             style="border-radius: 0 0 5px 5px;padding: 8px 7px 8px 7px;font-size: 14px;float: left;position:relative;margin-left: 10px;cursor: pointer;">
+            <span id="middleware-caption">Middleware</span>
+        </div>
+
+        <div id="ce-button" style="float: right;position:relative;margin: auto;cursor: pointer"><img
+                    id="ce-image" style="position:relative;top: 8px;right: 10px;margin-top: auto;margin-bottom: auto;width: 17px;height: 17px"
+                    alt="Collapse / Expand" src="{{ resource_base }}Icons/collapse-expand.png"></div>
+        <div id="php-version" style="cursor: pointer;float: right;position:relative;margin-right: 25px;"><img
+                    style="position:relative;top: 8px;margin-top: auto;margin-bottom: auto;width: 17px;height: 17px"
+                    alt="PHP Version" src="{{ resource_base }}Icons/server.png"> <span
+                    style="margin-left: 3px;position: relative;top: 2.8px;color: #ffffff;font-size: 10px">PHP {{ php_version }}</span>
+        </div>
+        <div id="script-ping" style="cursor: pointer;float: right;position:relative;margin-right: 25px;"><img
+                    style="position:relative;top: 9px;margin-top: auto;margin-bottom: auto;width: 17px;height: 17px"
+                    alt="PHP Version" src="{{ resource_base }}Icons/ping.png"> <span
+                    style="margin-left: 3px;position: relative;top: 2.8px;color: #ffffff;font-size: 10px">{{ ping }} MS</span>
+        </div>
+
+        <div id="memory-usage" style="cursor: pointer;float: right;position:relative;margin-right: 31px;"><img
+                    style="position:relative;top: 9px;margin-top: auto;margin-bottom: auto;width: 17px;height: 17px"
+                    alt="Memory Usage" src="{{ resource_base }}Icons/processor.png"> <span
+                    style="margin-left: 3px;position: relative;top: 2.8px;color: #ffffff;font-size: 10px">{{ memory_usage }}</span>
+        </div>
+
+        <div id="http-status" style="cursor: pointer;float: right;position:relative;margin-right: 31px;"><img
+                    style="position:relative;top: 9px;margin-top: auto;margin-bottom: auto;width: 17px;height: 17px"
+                    alt="HTTP Status" src="{{ resource_base }}Icons/http.png"> <span
+                    style="margin-left: 3px;position: relative;top: 2.8px;color: #ffffff;font-size: 10px">{{ http_status_code }}</span>
+        </div>
+
+        <div id="messages-container"
+             style="text-shadow: rgba(0, 0, 0, 0.7) 0 0 1px;color: black;width: 95%;border-radius: 3px;height: 150px;overflow: auto;text-align: left;display: none;font-size: 14px;position:relative;left: 20px;top: 5px;cursor: pointer">
+            {% set counter = 1 %}
+            {% for message in messages %}
+                <div id="message{{ counter }}"
+                     style="margin-bottom: 10px;padding: 5px;background-color: rgba(211,211,211,0.30);border-radius: 3px;width: 95%;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;">{{ message | raw }}</div>
+                {% set counter = counter + 1 %}
+            {% endfor %}
+        </div>
+
+        <div id="project-variables-container"
+             style="text-shadow: rgba(0, 0, 0, 0.7) 0 0 1px;color: black;background-color: rgba(211,211,211,0.30);width: 95%;border-radius: 3px;height: 150px;overflow: auto;text-align: left;display: none;font-size: 14px;position:relative;left: 20px;top: 5px;">
+            {% set counter = 1 %}
+            {% for project_variable, project_variable_val in project_variables %}
+                <div id="project-variable{{ counter }}"
+                     style="margin-bottom: 10px;padding: 5px;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;">{{ project_variable | raw }}
+                    : {{ project_variable_val | raw }}</div>
+                {% set counter = counter + 1 %}
+            {% endfor %}
+        </div>
+
+        <div id="database-config-container"
+             style="text-shadow: rgba(0, 0, 0, 0.7) 0 0 1px;color: black;background-color: rgba(211,211,211,0.30);width: 95%;border-radius: 3px;height: 150px;overflow: auto;text-align: left;display: none;font-size: 14px;position:relative;left: 20px;top: 5px;">
+            <span id="database-slot"
+                  style="text-shadow: black 0 0 1px;border-radius: 5px;background-color: rgba(192,192,192,0.4);padding: 5px;border: rgba(0,0,0,0.6) 1px solid;position: fixed;right: 100px;margin-top: 20px;">Database Slot 1</span>
+            {% set counter = 1 %}
+            {% for database_config_var, database_config_val in database_config['database_1'] %}
+                <div id="database1-config{{ counter }}"
+                     style="margin-bottom: 10px;padding: 5px;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;">{{ database_config_var | raw }}
+                    : {{ database_config_val | raw }}</div>
+                {% set counter = counter + 1 %}
+            {% endfor %}
+
+            <hr id="database2-slot">
+
+            {% set counter = 1 %}
+            {% for database_config_var, database_config_val in database_config['database_2'] %}
+                <div id="database2-config{{ counter }}"
+                     style="margin-bottom: 10px;padding: 5px;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;">{{ database_config_var | raw }}
+                    : {{ database_config_val | raw }}</div>
+                {% set counter = counter + 1 %}
+            {% endfor %}
+
+            <hr id="database3-slot">
+
+            {% set counter = 1 %}
+            {% for database_config_var, database_config_val in database_config['database_3'] %}
+                <div id="database3-config{{ counter }}"
+                     style="margin-bottom: 10px;padding: 5px;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;">{{ database_config_var | raw }}
+                    : {{ database_config_val | raw }}</div>
+                {% set counter = counter + 1 %}
+            {% endfor %}
+        </div>
+
+        <div id="query-container"
+             style="text-shadow: rgba(0, 0, 0, 0.7) 0 0 1px;color: black;background-color: rgba(211,211,211,0.30);width: 95%;border-radius: 3px;height: 150px;overflow: auto;text-align: left;display: none;font-size: 14px;position:relative;left: 20px;top: 5px;">
+            <span id="current-db"
+                  style="text-shadow: black 0 0 1px;border-radius: 5px;background-color: rgba(192,192,192,0.4);padding: 5px;border: rgba(0,0,0,0.6) 1px solid;position: fixed;right: 100px;margin-top: 20px;">Database Slot 1</span>
+            {% if db1_queries | length == 0 %}
+                <div style="padding: 5px">No Query has Been Recorded On DB 1</div>
+            {% else %}
+                {% set counter = 1 %}
+                {% for query in db1_queries %}
+                    <div id="database1-query{{ counter }}"
+                         style="margin-bottom: 10px;padding: 5px;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;">{{ query | raw }}</div>
+                    {% set counter = counter + 1 %}
+                {% endfor %}
+            {% endif %}
+
+            <hr id="db2">
+
+            {% if db2_queries | length == 0 %}
+                <div style="padding: 5px">No Query has Been Recorded On DB 2</div>
+            {% else %}
+                {% set counter = 1 %}
+                {% for query in db2_queries %}
+                    <div id="database2-query{{ counter }}"
+                         style="margin-bottom: 10px;padding: 5px;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;">{{ query | raw }}</div>
+                    {% set counter = counter + 1 %}
+                {% endfor %}
+            {% endif %}
+
+
+            <hr id="db3">
+
+            {% if db3_queries | length == 0 %}
+                <div style="padding: 5px">No Query has Been Recorded On DB 3</div>
+            {% else %}
+                {% set counter = 1 %}
+                {% for query in db3_queries %}
+                    <div id="database3-query{{ counter }}"
+                         style="margin-bottom: 10px;padding: 5px;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;">{{ query | raw }}</div>
+                    {% set counter = counter + 1 %}
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div id="session-container"
+             style="text-shadow: rgba(0, 0, 0, 0.7) 0 0 1px;color: black;background-color: rgba(211,211,211,0.30);width: 95%;border-radius: 3px;height: 150px;overflow: auto;text-align: left;display: none;font-size: 14px;position:relative;left: 20px;top: 5px;">
+            <pre style="padding-left: 5px;">{{ session_variables | raw }}</pre>
+        </div>
+
+        <div id="request-container"
+             style="text-shadow: rgba(0, 0, 0, 0.7) 0 0 1px;color: black;background-color: rgba(211,211,211,0.30);width: 95%;border-radius: 3px;height: 150px;overflow: auto;text-align: left;display: none;font-size: 14px;position:relative;left: 20px;top: 5px;">
+            <span id="request-type"
+                  style="text-shadow: black 0 0 1px;border-radius: 5px;background-color: rgba(192,192,192,0.4);padding: 5px;border: rgba(0,0,0,0.6) 1px solid;position: fixed;right: 100px;margin-top: 20px;">GET Variables</span>
+            <pre id="get-variables" style="margin-bottom: 10px;padding: 5px;">{{ get_variables }}</pre>
+
+            <hr id="post-init">
+
+            <pre id="post-variables" style="margin-bottom: 10px;padding: 5px;">{{ post_variables }}</pre>
+
+            <hr id="cookie-init">
+
+            <pre id="cookie-variables" style="margin-bottom: 10px;padding: 5px;">{{ cookie_variables }}</pre>
+        </div>
+
+        <div id="middleware-container"
+             style="text-shadow: rgba(0, 0, 0, 0.7) 0 0 1px;color: black;background-color: rgba(211,211,211,0.30);width: 95%;border-radius: 3px;height: 150px;overflow: auto;text-align: left;display: none;font-size: 14px;position:relative;left: 20px;top: 5px;">
+            {% set counter = 1 %}
+            {% for middleware in middlewares %}
+                <div id="middleware{{ counter }}"
+                     style="padding: 5px;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;">
+                    {{ middleware | raw }}
+                </div>
+                <br>
+                {% set counter = counter + 1 %}
+            {% endfor %}
+        </div>
+
+    </div>
+</div>
+
+<script src="{{ rootPath() }}public/Library/jquery/jquery-3.3.1.min.js"></script>
+
+<script>
+
+    $(document).ready(function () {
+
+        var debugbar = $("#debugbar");
+        var red_logo = $("#red-logo");
+        var ce_button = $("#ce-button");
+        var ce_image= $("#ce-image");
+
+        var message_tab = $("#message-tab");
+        var message_length = $("#message-length");
+        var message_caption = $("#message-caption");
+        var messages_container = $("#messages-container");
+        var project_tab = $("#project-tab");
+        var project_caption = $("#project-caption");
+        var project_container = $("#project-variables-container");
+        var database_tab = $("#database-tab");
+        var database_caption = $("#database-caption");
+        var database_container = $("#database-config-container");
+        var session_tab = $("#session-tab");
+        var session_caption = $("#session-caption");
+        var session_container = $("#session-container");
+        var request_tab = $("#request-tab");
+        var request_caption = $("#request-caption");
+        var request_container = $("#request-container");
+        var middleware_tab = $("#middleware-tab");
+        var middleware_caption = $("#middleware-caption");
+        var middleware_container = $("#middleware-container");
+        var query_tab = $("#query-tab");
+        var query_caption = $("#query-caption");
+        var query_container = $("#query-container");
+
+        var database_slot = $("#database-slot");
+
+        var database2_slot = $("#database2-slot");
+        var database3_slot = $("#database3-slot");
+
+        var current_db = $("#current-db");
+        var db2 = $("#db2");
+        var db3 = $("#db3");
+
+        var request_type = $("#request-type");
+
+        var post_init = $("#post-init");
+        var cookie_init = $("#cookie-init");
+
+        var php_version = $("#php-version");
+        var ping = $("#script-ping");
+        var memory_usage = $("#memory-usage");
+        var http_status = $("#http-status");
+
+
+        database_container.on("scroll", function () {
+            if (database_container.offset()['top'] <= database2_slot.offset()['top']) {
+                database_slot.html("Database Slot 1");
+            } else {
+                if (database_container.offset()['top'] <= database3_slot.offset()['top']) {
+                    database_slot.html("Database Slot 2");
+                } else {
+                    database_slot.html("Database Slot 3");
+                }
+            }
+        });
+
+        query_container.on("scroll", function () {
+            if (query_container.offset()['top'] <= db2.offset()['top']) {
+                current_db.html("Database Slot 1");
+            } else {
+                if (query_container.offset()['top'] <= db3.offset()['top']) {
+                    current_db.html("Database Slot 2");
+                } else {
+                    current_db.html("Database Slot 3");
+                }
+            }
+        });
+
+        request_container.on("scroll", function () {
+            if (request_container.offset()['top'] <= post_init.offset()['top']) {
+                request_type.html("GET Variables");
+            } else {
+                if (request_container.offset()['top'] + 6 <= cookie_init.offset()['top']) {
+                    request_type.html("POST Variables");
+                } else {
+                    request_type.html("COOKIE Variables");
+                }
+            }
+        });
+
+
+        message_tab.click(function () {
+            if (debugbar.css("height") === "35px") {
+                debugbar.animate({"height": "200px"}, 200);
+                message_tab.css({"background-color": "rgba(226, 90, 90, 0.80)"});
+                project_tab.css({"background-color": ""});
+                database_tab.css({"background-color": ""});
+                session_tab.css({"background-color": ""});
+                request_tab.css({"background-color": ""});
+                middleware_tab.css({"background-color": ""});
+                query_tab.css({"background-color": ""});
+                project_container.hide();
+                session_container.hide();
+                database_container.hide();
+                request_container.hide();
+                middleware_container.hide();
+                query_container.hide();
+                messages_container.show(200);
+            } else {
+                if (message_tab.css("background-color") == "rgba(226, 90, 90, 0.8)") {
+
+                    debugbar.animate({"height": "35px"}, 200);
+                    project_tab.css({"background-color": ""});
+                    message_tab.css({"background-color": ""});
+                    database_tab.css({"background-color": ""});
+                    session_tab.css({"background-color": ""});
+                    request_tab.css({"background-color": ""});
+                    middleware_tab.css({"background-color": ""});
+                    query_tab.css({"background-color": ""});
+                } else {
+                    session_tab.css({"background-color": ""});
+                    project_tab.css({"background-color": ""});
+                    message_tab.css({"background-color": "rgba(226, 90, 90, 0.80)"});
+                    database_tab.css({"background-color": ""});
+                    request_tab.css({"background-color": ""});
+                    middleware_tab.css({"background-color": ""});
+                    query_tab.css({"background-color": ""});
+                    project_container.hide();
+                    session_container.hide();
+                    database_container.hide();
+                    request_container.hide();
+                    middleware_container.hide();
+                    query_container.hide();
+                    messages_container.show(200);
+                }
+            }
+        });
+
+        project_tab.click(function () {
+            if (debugbar.css("height") === "35px") {
+                debugbar.animate({"height": "200px"}, 200);
+                project_tab.css({"background-color": "rgba(226, 90, 90, 0.80)"});
+                message_tab.css({"background-color": ""});
+                database_tab.css({"background-color": ""});
+                session_tab.css({"background-color": ""});
+                request_tab.css({"background-color": ""});
+                middleware_tab.css({"background-color": ""});
+                query_tab.css({"background-color": ""});
+                messages_container.hide();
+                database_container.hide();
+                session_container.hide();
+                request_container.hide();
+                middleware_container.hide();
+                query_container.hide();
+                project_container.show(200);
+            } else {
+                if (project_tab.css("background-color") == "rgba(226, 90, 90, 0.8)") {
+
+                    debugbar.animate({"height": "35px"}, 200);
+                    project_tab.css({"background-color": ""});
+                    message_tab.css({"background-color": ""});
+                    database_tab.css({"background-color": ""});
+                    session_tab.css({"background-color": ""});
+                    request_tab.css({"background-color": ""});
+                    middleware_tab.css({"background-color": ""});
+                    query_tab.css({"background-color": ""});
+                } else {
+                    session_tab.css({"background-color": ""});
+                    message_tab.css({"background-color": ""});
+                    project_tab.css({"background-color": "rgba(226, 90, 90, 0.80)"});
+                    database_tab.css({"background-color": ""});
+                    request_tab.css({"background-color": ""});
+                    middleware_tab.css({"background-color": ""});
+                    query_tab.css({"background-color": ""});
+                    messages_container.hide();
+                    session_container.hide();
+                    request_container.hide();
+                    database_container.hide();
+                    middleware_container.hide();
+                    query_container.hide();
+                    project_container.show(200);
+                }
+            }
+        });
+
+
+        database_tab.click(function () {
+            if (debugbar.css("height") === "35px") {
+                debugbar.animate({"height": "200px"}, 200);
+                database_tab.css({"background-color": "rgba(226, 90, 90, 0.80)"});
+                message_tab.css({"background-color": ""});
+                project_tab.css({"background-color": ""});
+                session_tab.css({"background-color": ""});
+                request_tab.css({"background-color": ""});
+                middleware_tab.css({"background-color": ""});
+                query_tab.css({"background-color": ""});
+                messages_container.hide();
+                project_container.hide();
+                session_container.hide();
+                request_container.hide();
+                middleware_container.hide();
+                query_container.hide();
+                database_container.show(200);
+            } else {
+                if (database_tab.css("background-color") == "rgba(226, 90, 90, 0.8)") {
+
+                    debugbar.animate({"height": "35px"}, 200);
+                    database_tab.css({"background-color": ""});
+                    message_tab.css({"background-color": ""});
+                    project_tab.css({"background-color": ""});
+                    session_tab.css({"background-color": ""});
+                    request_tab.css({"background-color": ""});
+                    middleware_tab.css({"background-color": ""});
+                    query_tab.css({"background-color": ""});
+                } else {
+                    session_tab.css({"background-color": ""});
+                    message_tab.css({"background-color": ""});
+                    project_tab.css({"background-color": ""});
+                    database_tab.css({"background-color": "rgba(226, 90, 90, 0.80)"});
+                    request_tab.css({"background-color": ""});
+                    middleware_tab.css({"background-color": ""});
+                    query_tab.css({"background-color": ""});
+                    messages_container.hide();
+                    project_container.hide();
+                    session_container.hide();
+                    request_container.hide();
+                    middleware_container.hide();
+                    query_container.hide();
+                    database_container.show(200);
+                }
+            }
+        });
+
+        query_tab.click(function () {
+            if (debugbar.css("height") === "35px") {
+                debugbar.animate({"height": "200px"}, 200);
+                database_tab.css({"background-color": ""});
+                query_tab.css({"background-color": "rgba(226, 90, 90, 0.80)"});
+                message_tab.css({"background-color": ""});
+                project_tab.css({"background-color": ""});
+                session_tab.css({"background-color": ""});
+                request_tab.css({"background-color": ""});
+                middleware_tab.css({"background-color": ""});
+                messages_container.hide();
+                project_container.hide();
+                session_container.hide();
+                request_container.hide();
+                middleware_container.hide();
+                database_container.hide();
+                query_container.show(200);
+            } else {
+                if (query_tab.css("background-color") == "rgba(226, 90, 90, 0.8)") {
+
+                    debugbar.animate({"height": "35px"}, 200);
+                    database_tab.css({"background-color": ""});
+                    query_tab.css({"background-color": ""});
+                    message_tab.css({"background-color": ""});
+                    project_tab.css({"background-color": ""});
+                    session_tab.css({"background-color": ""});
+                    request_tab.css({"background-color": ""});
+                    middleware_tab.css({"background-color": ""});
+                } else {
+                    session_tab.css({"background-color": ""});
+                    message_tab.css({"background-color": ""});
+                    project_tab.css({"background-color": ""});
+                    database_tab.css({"background-color": ""});
+                    query_tab.css({"background-color": "rgba(226, 90, 90, 0.80)"});
+                    request_tab.css({"background-color": ""});
+                    middleware_tab.css({"background-color": ""});
+                    messages_container.hide();
+                    project_container.hide();
+                    session_container.hide();
+                    request_container.hide();
+                    middleware_container.hide();
+                    database_container.hide();
+                    query_container.show(200);
+                }
+            }
+        });
+
+        session_tab.click(function () {
+            if (debugbar.css("height") === "35px") {
+                debugbar.animate({"height": "200px"}, 200);
+                session_tab.css({"background-color": "rgba(226, 90, 90, 0.80)"});
+                message_tab.css({"background-color": ""});
+                project_tab.css({"background-color": ""});
+                database_tab.css({"background-color": ""});
+                request_tab.css({"background-color": ""});
+                middleware_tab.css({"background-color": ""});
+                query_tab.css({"background-color": ""});
+                messages_container.hide();
+                project_container.hide();
+                database_container.hide(0);
+                request_container.hide();
+                middleware_container.hide();
+                query_container.hide();
+                session_container.show(200);
+            } else {
+
+                if (session_tab.css("background-color") == "rgba(226, 90, 90, 0.8)") {
+                    debugbar.animate({"height": "35px"}, 200);
+                    session_tab.css({"background-color": ""});
+                    message_tab.css({"background-color": ""});
+                    project_tab.css({"background-color": ""});
+                    database_tab.css({"background-color": ""});
+                    request_tab.css({"background-color": ""});
+                    middleware_tab.css({"background-color": ""});
+                    query_tab.css({"background-color": ""});
+                } else {
+                    session_tab.css({"background-color": "rgba(226, 90, 90, 0.80)"});
+                    message_tab.css({"background-color": ""});
+                    project_tab.css({"background-color": ""});
+                    database_tab.css({"background-color": ""});
+                    request_tab.css({"background-color": ""});
+                    middleware_tab.css({"background-color": ""});
+                    query_tab.css({"background-color": ""});
+                    messages_container.hide();
+                    project_container.hide();
+                    database_container.hide();
+                    request_container.hide();
+                    middleware_container.hide();
+                    query_container.hide();
+                    session_container.show(200);
+
+                }
+
+            }
+        });
+
+
+        request_tab.click(function () {
+            if (debugbar.css("height") === "35px") {
+                debugbar.animate({"height": "200px"}, 200);
+                request_tab.css({"background-color": "rgba(226, 90, 90, 0.80)"});
+                message_tab.css({"background-color": ""});
+                project_tab.css({"background-color": ""});
+                database_tab.css({"background-color": ""});
+                session_tab.css({"background-color": ""});
+                middleware_tab.css({"background-color": ""});
+                query_tab.css({"background-color": ""});
+                messages_container.hide();
+                project_container.hide();
+                database_container.hide();
+                session_container.hide();
+                middleware_container.hide();
+                query_container.hide();
+                request_container.show(200);
+            } else {
+
+                if (request_tab.css("background-color") == "rgba(226, 90, 90, 0.8)") {
+                    debugbar.animate({"height": "35px"}, 200);
+                    session_tab.css({"background-color": ""});
+                    message_tab.css({"background-color": ""});
+                    project_tab.css({"background-color": ""});
+                    database_tab.css({"background-color": ""});
+                    request_tab.css({"background-color": ""});
+                    middleware_tab.css({"background-color": ""});
+                    query_tab.css({"background-color": ""});
+                } else {
+                    request_tab.css({"background-color": "rgba(226, 90, 90, 0.80)"});
+                    message_tab.css({"background-color": ""});
+                    project_tab.css({"background-color": ""});
+                    database_tab.css({"background-color": ""});
+                    session_tab.css({"background-color": ""});
+                    middleware_tab.css({"background-color": ""});
+                    query_tab.css({"background-color": ""});
+                    messages_container.hide();
+                    project_container.hide();
+                    database_container.hide();
+                    session_container.hide();
+                    middleware_container.hide();
+                    query_container.hide();
+                    request_container.show(200);
+
+                }
+
+            }
+        });
+
+
+        middleware_tab.click(function () {
+            if (debugbar.css("height") === "35px") {
+                debugbar.animate({"height": "200px"}, 200);
+                middleware_tab.css({"background-color": "rgba(226, 90, 90, 0.80)"});
+                message_tab.css({"background-color": ""});
+                project_tab.css({"background-color": ""});
+                database_tab.css({"background-color": ""});
+                session_tab.css({"background-color": ""});
+                request_tab.css({"background-color": ""});
+                query_tab.css({"background-color": ""});
+                messages_container.hide();
+                project_container.hide();
+                database_container.hide();
+                session_container.hide();
+                request_container.hide();
+                query_container.hide();
+                middleware_container.show(200);
+            } else {
+
+                if (middleware_tab.css("background-color") == "rgba(226, 90, 90, 0.8)") {
+                    debugbar.animate({"height": "35px"}, 200);
+                    session_tab.css({"background-color": ""});
+                    message_tab.css({"background-color": ""});
+                    project_tab.css({"background-color": ""});
+                    database_tab.css({"background-color": ""});
+                    request_tab.css({"background-color": ""});
+                    middleware_tab.css({"background-color": ""});
+                    query_tab.css({"background-color": ""});
+                } else {
+                    middleware_tab.css({"background-color": "rgba(226, 90, 90, 0.80)"});
+                    message_tab.css({"background-color": ""});
+                    request_tab.css({"background-color": ""});
+                    project_tab.css({"background-color": ""});
+                    database_tab.css({"background-color": ""});
+                    session_tab.css({"background-color": ""});
+                    query_tab.css({"background-color": ""});
+                    messages_container.hide();
+                    project_container.hide();
+                    database_container.hide();
+                    session_container.hide();
+                    request_container.hide();
+                    query_container.hide();
+                    middleware_container.show(200);
+
+                }
+
+            }
+        });
+
+
+        message_tab.hover(function () {
+            message_tab.addClass("tab-section");
+        }, function () {
+            message_tab.removeClass("tab-section");
+        });
+
+
+        project_tab.hover(function () {
+            project_tab.addClass("tab-section");
+        }, function () {
+            project_tab.removeClass("tab-section");
+        });
+
+        database_tab.hover(function () {
+            database_tab.addClass("tab-section");
+        }, function () {
+            database_tab.removeClass("tab-section");
+        });
+
+        query_tab.hover(function () {
+            query_tab.addClass("tab-section");
+        }, function () {
+            query_tab.removeClass("tab-section");
+        });
+
+        session_tab.hover(function () {
+            session_tab.addClass("tab-section");
+        }, function () {
+            session_tab.removeClass("tab-section");
+        });
+
+        request_tab.hover(function () {
+            request_tab.addClass("tab-section");
+        }, function () {
+            request_tab.removeClass("tab-section");
+        });
+
+        middleware_tab.hover(function () {
+            middleware_tab.addClass("tab-section");
+        }, function () {
+            middleware_tab.removeClass("tab-section");
+        });
+
+
+        ce_button.click(function () {
+            if (debugbar.css("height") === "35px") {
+                debugbar.animate({"height": "200px"}, 200);
+                message_tab.css({"background-color": "rgba(226, 90, 90, 0.80)"});
+                project_container.hide();
+                session_container.hide();
+                middleware_container.hide();
+                query_container.hide();
+                messages_container.show(200);
+            } else {
+                debugbar.animate({"height": "35px"}, 200);
+                session_tab.css({"background-color": ""});
+                message_tab.css({"background-color": ""});
+                project_tab.css({"background-color": ""});
+                database_tab.css({"background-color": ""});
+                request_tab.css({"background-color": ""});
+                middleware_tab.css({"background-color": ""});
+                query_tab.css({"background-color": ""});
+            }
+        });
+
+        for (var counter = 0; counter <= {{ messages | length }}; counter++) {
+            let i = counter;
+            let message_element = $("#message" + i);
+            message_element.click(function () {
+                if (message_element.css("text-overflow") == "ellipsis") {
+                    message_element.css({
+                        "white-space": "",
+                        "text-overflow": "",
+                        "word-wrap": "break-word"
+                    });
+                } else {
+                    message_element.css({
+                        "white-space": "nowrap",
+                        "text-overflow": "ellipsis",
+                        "word-wrap": ""
+                    });
+                }
+
+            });
+        }
+
+        $(window).on("resize", function () {
+            debugBarResizeHandler(debugbar)
+        });
+
+        $(window).on("load", function () {
+            debugBarResizeHandler(debugbar)
+        });
+
+        function debugBarResizeHandler(debugBar) {
+            if ($(window).outerWidth() <= 500) {
+                red_logo.hide();
+                ce_image.css({"width": "13px", "height": "13px"});
+                message_tab.css({"margin-left": "8px"});
+                php_version.hide();
+                ping.hide();
+                memory_usage.hide();
+                http_status.hide();
+                message_length.hide();
+                current_db.css({"right": "35px"});
+                database_slot.css({"right": "35px"});
+                request_type.css({"right": "35px"});
+                message_caption.html("<img alt='Message' src='{{ resource_base }}icons/message.png' style='width: 13px;height: 13px;margin-top: 1px;'>");
+                project_caption.html("<img alt='Project' src='{{ resource_base }}icons/project.png' style='width: 13px;height: 13px;margin-top: 1px;'>");
+                database_caption.html("<img alt='Database' src='{{ resource_base }}icons/database.png' style='width: 13px;height: 13px;margin-top: 1px;'>");
+                query_caption.html("<img alt='Query' src='{{ resource_base }}icons/query.png' style='width: 13px;height: 13px;margin-top: 1px;'>");
+                session_caption.html("<img alt='Session' src='{{ resource_base }}icons/session.png' style='width: 13px;height: 13px;margin-top: 1px;'>");
+                request_caption.html("<img alt='Request' src='{{ resource_base }}icons/request.png' style='width: 13px;height: 13px;margin-top: 1px;'>");
+                middleware_caption.html("<img alt='Middleware' src='{{ resource_base }}icons/middleware.png' style='width: 13px;height: 13px;margin-top: 1px;'>");
+            }
+            else if ($(window).outerWidth() <= 920) {
+                php_version.hide();
+                ping.hide();
+                memory_usage.hide();
+                http_status.hide();
+                message_length.hide();
+                current_db.css({"right": "45px"});
+                database_slot.css({"right": "45px"});
+                request_type.css({"right": "45px"});
+                red_logo.show();
+                ce_image.css({"width": "17px", "height": "17px"});
+                message_tab.css({"margin-left": "39px"});
+                message_caption.html("<img alt='Message' src='{{ resource_base }}icons/message.png' style='width: 17px;height: 17px;margin-top: 1px;'>");
+                project_caption.html("<img alt='Project' src='{{ resource_base }}icons/project.png' style='width: 17px;height: 17px;margin-top: 1px;'>");
+                database_caption.html("<img alt='Database' src='{{ resource_base }}icons/database.png' style='width: 17px;height: 17px;margin-top: 1px;'>");
+                query_caption.html("<img alt='Query' src='{{ resource_base }}icons/query.png' style='width: 17px;height: 17px;margin-top: 1px;'>");
+                session_caption.html("<img alt='Session' src='{{ resource_base }}icons/session.png' style='width: 17px;height: 17px;margin-top: 1px;'>");
+                request_caption.html("<img alt='Request' src='{{ resource_base }}icons/request.png' style='width: 17px;height: 17px;margin-top: 1px;'>");
+                middleware_caption.html("<img alt='Middleware' src='{{ resource_base }}icons/middleware.png' style='width: 17px;height: 17px;margin-top: 1px;'>");
+            } else {
+                php_version.show();
+                ping.show();
+                memory_usage.show();
+                http_status.show();
+                current_db.css({"right": "100px"});
+                database_slot.css({"right": "100px"});
+                request_type.css({"right": "100px"});
+                red_logo.show();
+                ce_image.css({"width": "17px", "height": "17px"});
+                message_tab.css({"margin-left": "39px"});
+                message_caption.html("Message");
+                message_length.show();
+                project_caption.html("Project");
+                database_caption.html("Database");
+                query_caption.html("Query");
+                session_caption.html("Session");
+                request_caption.html("Request");
+                middleware_caption.html("Middleware");
+            }
+        }
+    });
+
+</script>
+
+</body>
