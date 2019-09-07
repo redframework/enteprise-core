@@ -24,7 +24,7 @@ class DebugBar
     private $resource_base;
     private static $messages = array();
 
-    public function __construct($resource_base = "public/Red/DebugBar/")
+    public function __construct($resource_base = PUBLIC_PATH . "/Red/DebugBar/")
     {
         $this->resource_base = $resource_base;
     }
