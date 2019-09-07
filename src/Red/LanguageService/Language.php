@@ -58,7 +58,7 @@ class Language
     }
 
     public static function set($language){
-        Cookie::set('language', $language, time() + (60 * 60 * 24 *7));
+        Cookie::set('language', $language, 30);
     }
 
 }
