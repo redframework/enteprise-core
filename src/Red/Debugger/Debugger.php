@@ -21,9 +21,9 @@ class Debugger
         self::$status = TRUE;
         ini_set('display_errors', 'off');
         error_reporting(E_ALL);
-        set_error_handler(array("App\Red\Debugger\Debugger", "errorHandler"), E_ALL);
+        set_error_handler(array("Red\Debugger\Debugger", "errorHandler"), E_ALL);
 
-        register_shutdown_function(array("App\Red\Debugger\Debugger", "fatalHandler"));
+        register_shutdown_function(array("Red\Debugger\Debugger", "fatalHandler"));
     }
 
 
@@ -32,7 +32,7 @@ class Debugger
         self::$status = FALSE;
         ini_set('display_errors', 'off');
         error_reporting(E_ALL);
-        set_error_handler(array("App\Red\Debugger\Debugger", "userErrorHandler"), E_ALL);
+        set_error_handler(array("Red\Debugger\Debugger", "userErrorHandler"), E_ALL);
     }
 
     public static function errorHandler($error_no, $error_string, $error_file, $error_line)
