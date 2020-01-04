@@ -252,11 +252,11 @@ class Router
                                 $error_no = 'You Defined a Route Action which not Exist';
                                 $error_message = 'Method Does not Exist';
                                 http_response_code(500);
-                                View::render('@Router/Error', compact('error_no', 'error_message'));
+                                View::render('@ErrorHandler/Error', compact('error_no', 'error_message'));
                                 return FALSE;
                             } else {
                                 http_response_code(500);
-                                View::render('@Router/UserError');
+                                View::render('@ErrorHandler/UserError');
                                 return FALSE;
                             }
                         }
