@@ -239,9 +239,9 @@ class Router
 
 
                     if (strtolower($controller) == "apiservice") {
-                        $namespace = 'App' . DS . 'APIs' . DS . $controller;
+                        $namespace = 'App' . "\\" . 'APIs' . "\\" . $controller;
                     } else {
-                        $namespace = 'App' . DS . 'Controllers' . DS . $controller;
+                        $namespace = 'App' . "\\" . 'Controllers' . "\\" . $controller;
                     }
 
 
@@ -395,7 +395,7 @@ class Router
         } else if (!is_callable(self::$default_route) && is_string(self::$default_route)) {
 
             $CM = explode('@', $CM);
-            $controller = 'App' . DS . 'controllers' . DS . $CM[0];
+            $controller = 'App' . "\\" . 'Controllers' . "\\" . $CM[0];
             $method = $CM[1];
 
             if (isset($method) && method_exists($controller, $method) && !isset($parameters)) {
