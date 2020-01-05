@@ -12,7 +12,7 @@ namespace Red\InputProvider;
 class Input
 {
     private static $get;
-    private static $post;
+    private static $post = array();
     private static $files;
 
     public static function initInput(){
@@ -25,6 +25,17 @@ class Input
             self::$post = $_POST;
             unset($_POST);
         }
+
+
+        $post_query_string = file_get_contents('php://input');
+
+        $data = array();
+
+        parse_str($post_query_string, $data);
+
+        self::$post = array_merge(self::$post, $data);
+
+
 
         if (isset($_FILES)){
             self::$files = $_FILES;
