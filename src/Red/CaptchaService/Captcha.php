@@ -20,7 +20,7 @@ class Captcha
     public static function generate()
     {
 
-        $image_files = scandir(CAPTCHA_PATH . 'images');
+        $image_files = scandir(CAPTCHA_PATH . 'Images');
         if (count($image_files) > 200) {
             foreach ($image_files as $file) {
                 if ($file !== '.' && $file !== '..' && $file !== '...') {
