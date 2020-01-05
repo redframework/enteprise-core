@@ -24,7 +24,7 @@ abstract class Middleware
     public static function initialize($middleware_name, $parameters = null)
     {
 
-        $middleware = 'App' . DS . 'Middlewares' . DS . $middleware_name;
+        $middleware = 'App' . "\\" . 'Middlewares' . "\\" . $middleware_name;
 
         if ($parameters != null) {
             new $middleware($parameters);
