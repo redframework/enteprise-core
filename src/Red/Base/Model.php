@@ -34,9 +34,24 @@ define('COUNT_CONDITION', 'COUNT_CONDITION');
 define('AVG', 'AVG');
 define('AVG_CONDITION', 'AVG_CONDITION');
 
-define('DB1', 'DATABASE_1');
-define('DB2', 'DATABASE_2');
-define('DB3', 'DATABASE_3');
+    /**
+     * @var $db_1_connection Database
+     */
+
+    protected $db_1_connection;
+
+    /**
+     * @var $db_2_connection Database
+     */
+
+    protected $db_2_connection;
+
+    /**
+     * @var $db_3_connection Database
+     */
+
+    protected $db_3_connection;
+	
 
 
 /**
