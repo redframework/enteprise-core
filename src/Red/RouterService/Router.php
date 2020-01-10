@@ -173,7 +173,8 @@ class Router
                     //Counting Different Of Url And Path, The Different Will Be Parameters
                     if ($url_without_parameters == $path) {
 
-                        if (self::$url_count <= $path_count + $parameters_count && self::$url_count >= $path_count + $filtered_parameters_count) {
+
+                        if ($path == "/" || self::$url_count <= $path_count + $parameters_count && self::$url_count >= $path_count + $filtered_parameters_count) {
                             //If Any Parameter Was Inserted Call Closure Object With Parameters
                             if (isset($url_parameters)) {
                                 if (!in_array(strtolower($_SERVER['REQUEST_METHOD']), $config['method'])) {
@@ -349,6 +350,7 @@ class Router
         } else {
             view::render("@Router/Home");
         }
+
         return FALSE;
     }
 
@@ -378,6 +380,7 @@ class Router
      */
     private static function defaultRoute()
     {
+
         if (is_null(self::$default_route)) {
             http_response_code('404');
             View::render('@Router/NotFoundError');
