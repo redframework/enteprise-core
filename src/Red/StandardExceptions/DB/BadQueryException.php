@@ -6,7 +6,7 @@
  */
 
 
-namespace Red\StandardExceptions;
+namespace Red\StandardExceptions\DB;
 
 
 use Red\Base\RedException;
