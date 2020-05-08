@@ -10,9 +10,9 @@ namespace Red\Base;
 
 use Exception;
 use Red\EnvironmentProvider\Environment;
+use Red\StandardExceptions\DB\BadQueryException;
 use Red\ValidateService\Validate;
 use Red\Red;
-use Red\View\View;
 
 
 // Flags For Query Method (CRUD)
@@ -34,6 +34,18 @@ define('COUNT_CONDITION', 'COUNT_CONDITION');
 define('AVG', 'AVG');
 define('AVG_CONDITION', 'AVG_CONDITION');
 
+define('DB1', 'DATABASE_1');
+define('DB2', 'DATABASE_2');
+define('DB3', 'DATABASE_3');
+
+
+/**
+ * Class Model
+ * @package App\Red
+ */
+class Model
+{
+
     /**
      * @var $db_1_connection Database
      */
@@ -51,19 +63,7 @@ define('AVG_CONDITION', 'AVG_CONDITION');
      */
 
     protected $db_3_connection;
-	
 
-
-/**
- * Class Model
- * @package App\Red
- */
-class Model
-{
-
-    protected $db_1_connection;
-    protected $db_2_connection;
-    protected $db_3_connection;
 
     protected $fields;
     protected $parameters;
@@ -521,9 +521,7 @@ class Model
      * @param null $offset
      * @param null $limit
      * @return bool
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
+     * @throws BadQueryException
      */
     public function query($table, $method, $database = DB1, $order = NULL, $offset = NULL, $limit = NULL)
     {
@@ -580,11 +578,7 @@ class Model
                         $this->fields = NULL;
                         $this->parameters = NULL;
                     } catch (\PDOException $error) {
-
-                        $error_no = "Database Query Error !";
-                        $error_message = $error->getMessage();
-
-                        Red::generateError($error_no, $error_message);
+                        throw new BadQueryException($error->getMessage());
                     }
                 } else if ($method === READ) {
 
@@ -639,10 +633,7 @@ class Model
 
                     } catch (\PDOException $error) {
 
-                        $error_no = "Database Query Error !";
-                        $error_message = $error->getMessage();
-
-                        Red::generateError($error_no, $error_message);
+                        throw new BadQueryException($error->getMessage());
 
                     }
 
@@ -687,10 +678,8 @@ class Model
 
                         } catch (\PDOException $error) {
 
-                            $error_no = "Database Query Error !";
-                            $error_message = $error->getMessage();
+                            throw new BadQueryException($error->getMessage());
 
-                            Red::generateError($error_no, $error_message);
                         }
                     }
 
@@ -753,10 +742,7 @@ class Model
 
                     } catch (\PDOException $error) {
 
-                        $error_no = "Database Query Error !";
-                        $error_message = $error->getMessage();
-
-                        Red::generateError($error_no, $error_message);
+                        throw new BadQueryException($error->getMessage());
 
                     }
 
@@ -803,10 +789,8 @@ class Model
 
                         } catch (\PDOException $error) {
 
-                            $error_no = "Database Query Error !";
-                            $error_message = $error->getMessage();
+                            throw new BadQueryException($error->getMessage());
 
-                            Red::generateError($error_no, $error_message);
                         }
                     }
 
@@ -844,10 +828,7 @@ class Model
                         $this->parameters = NULL;
                     } catch (\PDOException $error) {
 
-                        $error_no = "Database Query Error !";
-                        $error_message = $error->getMessage();
-
-                        Red::generateError($error_no, $error_message);
+                        throw new BadQueryException($error->getMessage());
 
                     }
                 } else if ($method === UPDATE_CONDITION) {
@@ -909,10 +890,7 @@ class Model
 
                         ob_end_clean();
 
-                        $error_no = "Database Query Error !";
-                        $error_message = $error->getMessage();
-
-                        Red::generateError($error_no, $error_message);
+                        throw new BadQueryException($error->getMessage());
 
                     }
                 } else if ($method === DELETE) {
@@ -941,10 +919,8 @@ class Model
 
                     } catch (\PDOException $error) {
 
-                        $error_no = "Database Query Error !";
-                        $error_message = $error->getMessage();
+                        throw new BadQueryException($error->getMessage());
 
-                        Red::generateError($error_no, $error_message);
                     }
                 } else if ($method === DELETE_CONDITION) {
 
@@ -976,10 +952,8 @@ class Model
                         $this->condition_parameters = NULL;
                     } catch (\PDOException $error) {
 
-                        $error_no = "Database Query Error !";
-                        $error_message = $error->getMessage();
+                        throw new BadQueryException($error->getMessage());
 
-                        Red::generateError($error_no, $error_message);
                     }
 
 
@@ -1021,11 +995,7 @@ class Model
 
                     } catch (\PDOException $error) {
 
-                        $error_no = "Database Query Error !";
-                        $error_message = $error->getMessage();
-
-
-                        Red::generateError($error_no, $error_message);
+                        throw new BadQueryException($error->getMessage());
 
                     }
 
@@ -1079,10 +1049,7 @@ class Model
 
                     } catch (\PDOException $error) {
 
-                        $error_no = "Database Query Error !";
-                        $error_message = $error->getMessage();
-
-                        Red::generateError($error_no, $error_message);
+                        throw new BadQueryException($error->getMessage());
 
                     }
 
@@ -1130,10 +1097,7 @@ class Model
 
                     } catch (\PDOException $error) {
 
-                        $error_no = "Database Query Error !";
-                        $error_message = $error->getMessage();
-
-                        Red::generateError($error_no, $error_message);
+                        throw new BadQueryException($error->getMessage());
 
                     }
 
@@ -1188,10 +1152,7 @@ class Model
 
                     } catch (\PDOException $error) {
 
-                        $error_no = "Database Query Error !";
-                        $error_message = $error->getMessage();
-
-                        Red::generateError($error_no, $error_message);
+                        throw new BadQueryException($error->getMessage());
 
                     }
 
@@ -1243,13 +1204,10 @@ class Model
                         $this->parameters = NULL;
                     } catch (\PDOException $error) {
 
-                        $error_no = "Database Query Error !";
-                        $error_message = $error->getMessage();
+                        throw new BadQueryException($error->getMessage());
 
-                        Red::generateError($error_no, $error_message);
                     }
                 } else if ($method === READ) {
-
 
                     $pattern = '/^[0-9]{0,999}+$/';
                     if (!preg_match($pattern, $offset)) {
@@ -1301,10 +1259,7 @@ class Model
                         $this->fields = NULL;
                     } catch (\PDOException $error) {
 
-                        $error_no = "Database Query Error !";
-                        $error_message = $error->getMessage();
-
-                        Red::generateError($error_no, $error_message);
+                        throw new BadQueryException($error->getMessage());
 
                     }
 
@@ -1347,10 +1302,8 @@ class Model
 
                         } catch (\PDOException $error) {
 
-                            $error_no = "Database Query Error !";
-                            $error_message = $error->getMessage();
+                            throw new BadQueryException($error->getMessage());
 
-                            Red::generateError($error_no, $error_message);
                         }
                     }
 
@@ -1414,10 +1367,7 @@ class Model
 
                     } catch (\PDOException $error) {
 
-                        $error_no = "Database Query Error !";
-                        $error_message = $error->getMessage();
-
-                        Red::generateError($error_no, $error_message);
+                        throw new BadQueryException($error->getMessage());
 
                     }
 
@@ -1464,10 +1414,8 @@ class Model
 
                         } catch (\PDOException $error) {
 
-                            $error_no = "Database Query Error !";
-                            $error_message = $error->getMessage();
+                            throw new BadQueryException($error->getMessage());
 
-                            Red::generateError($error_no, $error_message);
                         }
                     }
 
@@ -1505,10 +1453,7 @@ class Model
                         $this->parameters = NULL;
                     } catch (\PDOException $error) {
 
-                        $error_no = "Database Query Error !";
-                        $error_message = $error->getMessage();
-
-                        Red::generateError($error_no, $error_message);
+                        throw new BadQueryException($error->getMessage());
 
                     }
                 } else if ($method === UPDATE_CONDITION) {
@@ -1571,10 +1516,7 @@ class Model
 
                         ob_end_clean();
 
-                        $error_no = "Database Query Error !";
-                        $error_message = $error->getMessage();
-
-                        Red::generateError($error_no, $error_message);
+                        throw new BadQueryException($error->getMessage());
 
                     }
                 } else if ($method === DELETE) {
@@ -1602,10 +1544,8 @@ class Model
 
                     } catch (\PDOException $error) {
 
-                        $error_no = "Database Query Error !";
-                        $error_message = $error->getMessage();
+                        throw new BadQueryException($error->getMessage());
 
-                        Red::generateError($error_no, $error_message);
                     }
                 } else if ($method === DELETE_CONDITION) {
 
@@ -1638,10 +1578,8 @@ class Model
 
                     } catch (\PDOException $error) {
 
-                        $error_no = "Database Query Error !";
-                        $error_message = $error->getMessage();
+                        throw new BadQueryException($error->getMessage());
 
-                        Red::generateError($error_no, $error_message);
                     }
 
 
@@ -1681,10 +1619,7 @@ class Model
 
                     } catch (\PDOException $error) {
 
-                        $error_no = "Database Query Error !";
-                        $error_message = $error->getMessage();
-
-                        Red::generateError($error_no, $error_message);
+                        throw new BadQueryException($error->getMessage());
 
                     }
 
@@ -1738,10 +1673,7 @@ class Model
 
                     } catch (\PDOException $error) {
 
-                        $error_no = "Database Query Error !";
-                        $error_message = $error->getMessage();
-
-                        Red::generateError($error_no, $error_message);
+                        throw new BadQueryException($error->getMessage());
 
                     }
 
@@ -1789,10 +1721,7 @@ class Model
 
                     } catch (\PDOException $error) {
 
-                        $error_no = "Database Query Error !";
-                        $error_message = $error->getMessage();
-
-                        Red::generateError($error_no, $error_message);
+                        throw new BadQueryException($error->getMessage());
 
                     }
 
@@ -1847,19 +1776,14 @@ class Model
 
                     } catch (\PDOException $error) {
 
-                        $error_no = "Database Query Error !";
-                        $error_message = $error->getMessage();
-
-                        Red::generateError($error_no, $error_message);
+                        throw new BadQueryException($error->getMessage());
 
                     }
 
 
                 } else {
 
-                    $error_no = "Database Query Error !";
-
-                    Red::generateError($error_no);
+                    throw new BadQueryException("Wrong Operational Flag.");
                 }
             }
             if (Environment::get($database,'Driver') == 'sqlite') {
@@ -1912,10 +1836,8 @@ class Model
                         $this->parameters = NULL;
                     } catch (\PDOException $error) {
 
-                        $error_no = "Database Query Error !";
-                        $error_message = $error->getMessage();
+                        throw new BadQueryException($error->getMessage());
 
-                        Red::generateError($error_no, $error_message);
                     }
                 }
                 else if ($method === READ) {
@@ -1972,10 +1894,7 @@ class Model
 
                     } catch (\PDOException $error) {
 
-                        $error_no = "Database Query Error !";
-                        $error_message = $error->getMessage();
-
-                        Red::generateError($error_no, $error_message);
+                        throw new BadQueryException($error->getMessage());
 
                     }
 
@@ -2020,10 +1939,7 @@ class Model
 
                         } catch (\PDOException $error) {
 
-                            $error_no = "Database Query Error !";
-                            $error_message = $error->getMessage();
-
-                            Red::generateError($error_no, $error_message);
+                            throw new BadQueryException($error->getMessage());
 
                         }
                     }
@@ -2088,10 +2004,7 @@ class Model
 
                     } catch (\PDOException $error) {
 
-                        $error_no = "Database Query Error !";
-                        $error_message = $error->getMessage();
-
-                        Red::generateError($error_no, $error_message);
+                        throw new BadQueryException($error->getMessage());
 
                     }
 
@@ -2138,9 +2051,7 @@ class Model
 
                         } catch (\PDOException $error) {
 
-                            $error_no = "Database Query Error !";
-                            $error_message = $error->getMessage();
-                            Red::generateError($error_no, $error_message);
+                            throw new BadQueryException($error->getMessage());
 
                         }
                     }
@@ -2180,9 +2091,7 @@ class Model
                         $this->parameters = NULL;
                     } catch (\PDOException $error) {
 
-                        $error_no = "Database Query Error !";
-                        $error_message = $error->getMessage();
-                        Red::generateError($error_no, $error_message);
+                        throw new BadQueryException($error->getMessage());
 
                     }
                 }
@@ -2245,10 +2154,7 @@ class Model
 
                         ob_end_clean();
 
-                        $error_no = "Database Query Error !";
-                        $error_message = $error->getMessage();
-
-                        Red::generateError($error_no, $error_message);
+                        throw new BadQueryException($error->getMessage());
 
                     }
                 }
@@ -2278,10 +2184,7 @@ class Model
 
                     } catch (\PDOException $error) {
 
-                        $error_no = "Database Query Error !";
-                        $error_message = $error->getMessage();
-
-                        Red::generateError($error_no, $error_message);
+                        throw new BadQueryException($error->getMessage());
 
                     }
                 }
@@ -2315,10 +2218,8 @@ class Model
                         $this->condition_parameters = NULL;
                     } catch (\PDOException $error) {
 
-                        $error_no = "Database Query Error !";
-                        $error_message = $error->getMessage();
+                        throw new BadQueryException($error->getMessage());
 
-                        Red::generateError($error_no, $error_message);
                     }
 
 
@@ -2361,10 +2262,7 @@ class Model
 
                     } catch (\PDOException $error) {
 
-                        $error_no = "Database Query Error !";
-                        $error_message = $error->getMessage();
-
-                        Red::generateError($error_no, $error_message);
+                        throw new BadQueryException($error->getMessage());
 
                     }
 
@@ -2419,10 +2317,7 @@ class Model
 
                     } catch (\PDOException $error) {
 
-                        $error_no = "Database Query Error !";
-                        $error_message = $error->getMessage();
-
-                        Red::generateError($error_no, $error_message);
+                        throw new BadQueryException($error->getMessage());
 
                     }
 
@@ -2471,10 +2366,7 @@ class Model
 
                     } catch (\PDOException $error) {
 
-                        $error_no = "Database Query Error !";
-                        $error_message = $error->getMessage();
-
-                        Red::generateError($error_no, $error_message);
+                        throw new BadQueryException($error->getMessage());
 
                     }
 
@@ -2530,10 +2422,7 @@ class Model
 
                     } catch (\PDOException $error) {
 
-                        $error_no = "Database Query Error !";
-                        $error_message = $error->getMessage();
-
-                        Red::generateError($error_no, $error_message);
+                        throw new BadQueryException($error->getMessage());
 
                     }
 
@@ -2555,9 +2444,7 @@ class Model
      * @param $query
      * @param $method
      * @param $database
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
+     * @throws BadQueryException
      */
     public function freeQuery($query, $method, $database)
     {
@@ -2593,10 +2480,8 @@ class Model
 
         } catch (\PDOException $error) {
 
-            $error_no = "Database Query Error !";
-            $error_message = $error->getMessage();
+            throw new BadQueryException($error->getMessage());
 
-            Red::generateError($error_no, $error_message);
         }
     }
 
