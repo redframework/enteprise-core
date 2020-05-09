@@ -155,9 +155,7 @@ class Model
         try {
             $config = Environment::get($database);
         } catch (Exception $error) {
-            http_response_code(500);
-            echo $error->getMessage();
-            exit();
+            Red::generateError("Database Initialize Failed !", $error->getMessage());
         }
 
         if ($config['Driver'] === "mysql") {
