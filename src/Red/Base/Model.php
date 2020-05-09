@@ -1156,9 +1156,7 @@ class Model
 
 
                 } else {
-                    echo 'Error Occured';
-                    http_response_code(500);
-                    exit();
+                    Red::generateError("an Error Occurred !", "ORM Method is not Valid");
                 }
             }
             else if (Environment::get($database, 'Driver') == 'sqlsrv') {
